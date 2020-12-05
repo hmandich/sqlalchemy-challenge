@@ -11,4 +11,4 @@
 2. app.py - Step 2 - Climate App
     
 **Submitted by:** Hillary Mandich
-_Date_: December 5th,2020
+_Date_: December 5th, 2020
