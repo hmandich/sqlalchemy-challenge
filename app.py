@@ -24,7 +24,7 @@ Base.prepare(engine, reflect=True)
 measurement = Base.classes.measurement
 station = Base.classes.station
 
-# Create our session (link) from Python to the DB
+# Create our session (link) from Python to the DB - I know it is best practice to run sessions inside routes but I couldn't get all them to work
 session = Session(engine)
 
 #flast setup - declare flask app
@@ -75,6 +75,29 @@ def stations():
         stations_results.append(station_dt)
 
     return jsonify(stations_results)
+
+#tobs route -  returns tobs for the most active station from last year - USC00519281
+@app.route("/api/v1.0/tobs")
+def tobs():
+
+    #get temperature measurements for last year
+    temp_obsv = session.query(measurement.date,measurement.tobs).filter(measurement.station=="USC00519281").\
+    filter(func.strftime("%Y-%m-%d",measurement.date) >= "2016-08-23").all()
+
+    #create list of dictionaries (one for each observation)
+    tobs_results = []
+    for t in temp_obsv:
+        tobs_dt = {}
+        tobs_dt["date"] = t.date
+        tobs_dt["tobs"] = t.tobs
+        tobs_results.append(tobs_dt)
+
+    return jsonify(tobs_results)
+
+
+
+
+
 
 #if main run 
 if __name__ == "__main__":
