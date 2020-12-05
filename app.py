@@ -94,14 +94,38 @@ def tobs():
 
     return jsonify(tobs_results)
 
-#tobs route -  returns tobs for the most active station from last year - USC00519281
+#start date - accepects start date as parameter, returns min, max and avg temp for that date
 @app.route("/api/v1.0/<start>")
-def tobs():
+def start(start):
 
-#tobs route -  returns tobs for the most active station from last year - USC00519281
+    #set up input
+    start_date =dt.datetime.func.strftime("%Y-%m-%d")
+
+    temperatures = session.query(func.min(measurement.tobs),func.max(measurement.tobs),func.avg(measurement.tobs)).\
+    filter(measurement.date >=start_date).all()
+
+    summary_stats = list(np.ravel(temperatures))
+
+    return jsonify(summary_stats)
+
+#start and end route -  accepects start and end date as parameter, returns min, max and avg temp for that date
 @app.route("/api/v1.0/<start>/<end>")
-def tobs():
+def start_end(start,end):
+	# Set input
+	start = dt.datetime.strptime(start,"%Y-%m-%d")
+	End = dt.datetime.strptime(end,"%Y-%m-%d")
 
+	# Query Min, Max, and Avg based on dates
+	temperatures_2 = session.query(func.min(measurement.tobs),func.max(measurement.tobs),func.avg(measurement.tobs)).\
+    filter(measurement.date.between(start,end).all()
+	
+	#summary_stats_2 = list(np.ravel(temperatures_2))
+
+	# Jsonify summary
+	return jsonify(summary_stats_2)
+
+#close query
+session.close()  
 
 #if main run 
 if __name__ == "__main__":
