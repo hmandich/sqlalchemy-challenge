@@ -44,18 +44,37 @@ def home():
         f"/api/v1.0/<start>/<end>"
     )
 
+#return particitation date for last year
 @app.route("/api/v1.0/precipitation")
 def precipitation():
+ 
+    prcp_data = session.query(func.strftime("%Y-%m-%d", measurement.date), measurement.prcp).\
+        filter(func.strftime("%Y-%m-%d", measurement.date) >= "2016-08-23").all()
     
-    prcp_data = session.query(measurement.date).all()
-    
-#create dictionary
-    results_dict = {}
+    prcp_results = {}
     for result in prcp_data:
-        results_dict[result[0]] = result[1]
-    # Jsonify summary
-    return jsonify(results_dict)
+        prcp_results[result[0]] = result[1]
 
+    return jsonify(prcp_results)
+
+#station route -  returns all stations
+@app.route("/api/v1.0/stations")
+def stations():
+
+    stations_query = session.query(station).all()
+
+     #create a list to pull all data into dictiornay 
+    stations_results = []
+    for s in stations_query:
+        station_dt = {}
+        station_dt["station"] = s.station
+        station_dt["name"] = s.name
+        station_dt["latitude"] = s.latitude
+        station_dt["longitude"] = s.longitude
+        station_dt["elevation"] = s.elevation
+        stations_results.append(station_dt)
+
+    return jsonify(stations_results)
 
 #if main run 
 if __name__ == "__main__":
