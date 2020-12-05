@@ -94,9 +94,13 @@ def tobs():
 
     return jsonify(tobs_results)
 
+#tobs route -  returns tobs for the most active station from last year - USC00519281
+@app.route("/api/v1.0/<start>")
+def tobs():
 
-
-
+#tobs route -  returns tobs for the most active station from last year - USC00519281
+@app.route("/api/v1.0/<start>/<end>")
+def tobs():
 
 
 #if main run 
