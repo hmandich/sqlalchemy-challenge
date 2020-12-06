@@ -99,7 +99,7 @@ def tobs():
 def start(start):
 
     #set up input
-    start_date =dt.datetime.func.strftime("%Y-%m-%d")
+    start_date =dt.datetime.strptime(start,"%Y-%m-%d")
 
     temperatures = session.query(func.min(measurement.tobs),func.max(measurement.tobs),func.avg(measurement.tobs)).\
     filter(measurement.date >=start_date).all()
@@ -110,19 +110,20 @@ def start(start):
 
 #start and end route -  accepects start and end date as parameter, returns min, max and avg temp for that date
 @app.route("/api/v1.0/<start>/<end>")
-def start_end(start,end):
+def startend(startd,end):
+
 	# Set input
-	start = dt.datetime.strptime(start,"%Y-%m-%d")
-	End = dt.datetime.strptime(end,"%Y-%m-%d")
+	start = dt.datetime.strptime(startd,"%Y-%m-%d")
+	end = dt.datetime.strptime(end,"%Y-%m-%d")
 
 	# Query Min, Max, and Avg based on dates
-	temperatures_2 = session.query(func.min(measurement.tobs),func.max(measurement.tobs),func.avg(measurement.tobs)).\
-    filter(measurement.date.between(start,end).all()
+	temperature = session.query(func.min(measurement.tobs),func.max(measurement.tobs),func.avg(measurement.tobs)).\
+    filter(measurement.date.between(start,end)).all()
 	
-	#summary_stats_2 = list(np.ravel(temperatures_2))
+	summary= list(np.ravel(temperature))
 
 	# Jsonify summary
-	return jsonify(summary_stats_2)
+	return jsonify(summary)
 
 #close query
 session.close()  
