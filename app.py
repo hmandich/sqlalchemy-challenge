@@ -110,15 +110,15 @@ def start(start):
 
 #start and end route -  accepects start and end date as parameter, returns min, max and avg temp for that date
 @app.route("/api/v1.0/<start>/<end>")
-def startend(startd,end):
+def startend(start,end):
 
 	# Set input
-	start = dt.datetime.strptime(startd,"%Y-%m-%d")
+	starta = dt.datetime.strptime(start,"%Y-%m-%d")
 	end = dt.datetime.strptime(end,"%Y-%m-%d")
 
 	# Query Min, Max, and Avg based on dates
 	temperature = session.query(func.min(measurement.tobs),func.max(measurement.tobs),func.avg(measurement.tobs)).\
-    filter(measurement.date.between(start,end)).all()
+    filter(measurement.date.between(starta,end)).all()
 	
 	summary= list(np.ravel(temperature))
 
